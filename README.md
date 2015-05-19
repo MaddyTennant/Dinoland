@@ -9,6 +9,14 @@ cd raptor
 
 Start up a server
 
+for python 2
+
+```
+python -m SimpleHTTPServer
+```
+
+for python 3
+
 ```
 python -m 'http.server'
 ```

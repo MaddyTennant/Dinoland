@@ -3,7 +3,8 @@
 Clone raptor
 
 ```
-git clone https://github.com/carlmcmillan/raptor.git
+git clone https://github.com/carlmcmillan/raptor.git  
+cd raptor
 ```
 
 Start up a server

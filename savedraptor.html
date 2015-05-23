@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>hi</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				font-family: Monospace;
+				background-color: #000;
+				color: #fff;
+				margin: 0px;
+				overflow: hidden;
+			}
+			#info {
+				color: #fff;
+				position: absolute;
+				top: 10px;
+				width: 100%;
+				text-align: center;
+				z-index: 100;
+				display:block;
+			}
+			#info a, .button { color: #f00; font-weight: bold; text-decoration: underline; cursor: pointer }
+		</style>
+	</head>
+
+	<body>
+
+		<script src="js/three.min.js"></script>
+
+		<script src="js/loaders/DDSLoader.js"></script>
+		<script src="js/loaders/MTLLoader.js"></script>
+		<script src="js/loaders/OBJMTLLoader.js"></script>
+
+		<script src="js/Detector.js"></script>
+		<script src="js/libs/stats.min.js"></script>
+
+		<script>
+
+			var container, stats;
+
+			var camera, scene, renderer;
+
+			var mouseX = 0, mouseY = 0;
+
+			var windowHalfX = window.innerWidth / 2;
+			var windowHalfY = window.innerHeight / 2;
+
+
+			init();
+			animate();
+
+
+			function init() {
+
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+				
+				renderer = new THREE.WebGLRenderer({antialias:true});
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				container.appendChild( renderer.domElement );
+
+				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
+				camera.position.y = 50;
+				camera.position.z = 300;
+
+				// scene
+
+				scene = new THREE.Scene();
+				
+				var ambient = new THREE.AmbientLight( 0x444444 );
+				scene.add( ambient );
+
+				var directionalLight = new THREE.DirectionalLight( 0xffeedd );
+				directionalLight.position.set( 0, 0, 1 ).normalize();
+				scene.add( directionalLight );
+	
+
+				// Skybox
+				
+				var imagePrefix = "images/dawnmountain-";
+				var directions  = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
+				var imageSuffix = ".png";
+				var skyGeometry = new THREE.CubeGeometry( 500, 500, 500 );	
+				
+				var materialArray = [];
+				for (var i = 0; i < 6; i++)
+					materialArray.push( new THREE.MeshBasicMaterial({
+						map: THREE.ImageUtils.loadTexture( imagePrefix + directions[i] + imageSuffix),
+						side: THREE.BackSide
+					}));
+				var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
+				var skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
+				scene.add( skyBox );
+	
+	
+				// Box
+				
+				var geometry = new THREE.CubeGeometry( 10, 10, 10);
+				var material = new THREE.MeshPhongMaterial( { map: THREE.ImageUtils.loadTexture('images/crate.jpg') } );
+			  
+				mesh = new THREE.Mesh(geometry, material );
+				mesh.position.z = 100;
+				mesh.position.x = 40;
+				mesh.rotation.y = Math.PI /4;
+				scene.add( mesh );
+
+				
+				// Dino
+
+				var onProgress = function ( xhr ) {
+					if ( xhr.lengthComputable ) {
+						var percentComplete = xhr.loaded / xhr.total * 100;
+						console.log( Math.round(percentComplete, 2) + '% downloaded' );
+					}
+				};
+
+				var onError = function ( xhr ) {
+				};
+
+
+				THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
+
+				var loader = new THREE.OBJMTLLoader();
+				loader.load( 'Pterodactyl/Pterodactyl.obj', 'Pterodactyl/Pterodactyl.mtl', function ( object ) {
+
+					object.rotation.y = Math.PI / 5;
+					object.position.y = 60;
+					object.position.z = -150;
+					scene.add( object );
+
+				}, onProgress, onError );
+
+				// var loader = new THREE.OBJMTLLoader();
+				// loader.load( 'Pterodactyl/Pterodactyl.obj', 'Pterodactyl/Pterodactyl.mtl', function ( object ) {
+
+				// object.rotation.y = Math.PI / 4;
+				// object.position.y = -50;
+				// scene.add( object );
+
+				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+
+				//
+
+				window.addEventListener( 'resize', onWindowResize, false );
+
+			}
+
+			function onWindowResize() {
+
+				windowHalfX = window.innerWidth / 2;
+				windowHalfY = window.innerHeight / 2;
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+
+			function onDocumentMouseMove( event ) {
+
+				mouseX = ( event.clientX - windowHalfX ) / 2;
+				mouseY = ( event.clientY - windowHalfY ) / 2;
+
+			}
+
+			//
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+				render();
+
+			}
+
+			function render() {
+
+				// camera.position.x += ( mouseX - camera.position.x ) * .05;
+				// camera.position.y += ( - mouseY - camera.position.y ) * .05;
+
+				camera.lookAt( scene.position );
+
+				renderer.render( scene, camera );
+
+			}
+
+		</script>
+
+	</body>
+</html>

@@ -64,7 +64,7 @@
 
 				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
 				camera.position.y = 50;
-				camera.position.z = 200;
+				camera.position.z = 300;
 
 				// scene
 
@@ -103,12 +103,11 @@
 			  
 				mesh = new THREE.Mesh(geometry, material );
 				mesh.position.z = 100;
-				mesh.position.x = 40;
+				mesh.position.x = 30;
 				mesh.rotation.y = Math.PI /4;
 				scene.add( mesh );
 
-				
-				// Dino
+				//Dino2
 
 				var onProgress = function ( xhr ) {
 					if ( xhr.lengthComputable ) {
@@ -126,11 +125,41 @@
 				var loader = new THREE.OBJMTLLoader();
 				loader.load( 'obj/Raptor.obj', 'obj/Raptor.mtl', function ( object ) {
 
-					object.rotation.y = Math.PI / 4;
-					object.position.y = -50;
+				object.rotation.y = Math.PI / 4;
+				object.position.y = -70;
+				object.position.x = 100;
+				object.position.z = -100;
+				scene.add( object );
+
+				}, onProgress, onError );
+
+
+				// Dino
+
+				var onProgress = function ( xhr ) {
+					if ( xhr.lengthComputable ) {
+						var percentComplete = xhr.loaded / xhr.total * 100;
+						console.log( Math.round(percentComplete, 2) + '% downloaded' );
+					}
+				};
+
+				var onError = function ( xhr ) {
+				};
+
+
+				THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
+
+				var loader = new THREE.OBJMTLLoader();
+				loader.load( 'Pterodactyl/Pterodactyl.obj', 'Pterodactyl/Pterodactyl.mtl', function ( object ) {
+
+					object.rotation.y = Math.PI / 5;
+					object.position.y = 60;
+					object.position.z = -150;
 					scene.add( object );
 
 				}, onProgress, onError );
+
+				//
 
 				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 
@@ -170,8 +199,8 @@
 
 			function render() {
 
-				//camera.position.x += ( mouseX - camera.position.x ) * .05;
-				//camera.position.y += ( - mouseY - camera.position.y ) * .05;
+				// camera.position.x += ( mouseX - camera.position.x ) * .05;
+				// camera.position.y += ( - mouseY - camera.position.y ) * .05;
 
 				camera.lookAt( scene.position );
 

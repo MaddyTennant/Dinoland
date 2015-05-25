@@ -33,6 +33,7 @@
 		<script src="js/loaders/MTLLoader.js"></script>
 		<script src="js/loaders/OBJMTLLoader.js"></script>
 
+
 		<script src="js/Detector.js"></script>
 		<script src="js/libs/stats.min.js"></script>
 
@@ -136,30 +137,44 @@
 
 				// Dino
 
-				var onProgress = function ( xhr ) {
-					if ( xhr.lengthComputable ) {
-						var percentComplete = xhr.loaded / xhr.total * 100;
-						console.log( Math.round(percentComplete, 2) + '% downloaded' );
-					}
-				};
+				// var onProgress = function ( xhr ) {
+				// 	if ( xhr.lengthComputable ) {
+				// 		var percentComplete = xhr.loaded / xhr.total * 100;
+				// 		console.log( Math.round(percentComplete, 2) + '% downloaded' );
+				// 	}
+				// };
 
-				var onError = function ( xhr ) {
-				};
+				// var onError = function ( xhr ) {
+				// };
 
 
-				THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
+				// THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
 
-				var loader = new THREE.OBJMTLLoader();
-				loader.load( 'Pterodactyl/Pterodactyl.obj', 'Pterodactyl/Pterodactyl.mtl', function ( object ) {
+				// var loader = new THREE.OBJMTLLoader();
+				// loader.load( 'Pterodactyl/Pterodactyl.obj', 'Pterodactyl/Pterodactyl.mtl', function ( object ) {
 
-					object.rotation.y = Math.PI / 5;
-					object.position.y = 60;
-					object.position.z = -150;
-					scene.add( object );
+				// 	object.rotation.y = Math.PI / 5;
+				// 	object.position.y = 60;
+				// 	object.position.z = -150;
+				// 	scene.add( object );
 
-				}, onProgress, onError );
+				// }, onProgress, onError );
 
 				//
+
+				//Animated Dino
+
+				var loader = new THREE.JSONLoader(true);
+				loader.load({
+				    model: "Pterodactyl2.json",
+				    callback: function(geometry) {
+				        mesh = new THREE.Mesh(geometry,new THREE.MeshFaceMaterial);
+				        mesh.position.set(0,0,0);
+				        mesh.scale.set(1,1,1);
+				        scene.add(mesh);
+				        renderer.render(scene, camera);
+				    }
+				});
 
 				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 

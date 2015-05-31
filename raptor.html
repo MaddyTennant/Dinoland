@@ -164,17 +164,17 @@
 
 				//Animated Dino
 
-				var loader = new THREE.JSONLoader(true);
-				loader.load({
-				    model: "Pterodactyl2.json",
-				    callback: function(geometry) {
-				        mesh = new THREE.Mesh(geometry,new THREE.MeshFaceMaterial);
-				        mesh.position.set(0,0,0);
-				        mesh.scale.set(1,1,1);
-				        scene.add(mesh);
-				        renderer.render(scene, camera);
-				    }
-				});
+				// var loader = new THREE.JSONLoader(true);
+				// loader.load({
+				//     model: "Pterodactyl2.json",
+				//     callback: function(geometry) {
+				//         mesh = new THREE.Mesh(geometry,new THREE.MeshFaceMaterial);
+				//         mesh.position.set(0,0,0);
+				//         mesh.scale.set(1,1,1);
+				//         scene.add(mesh);
+				//         renderer.render(scene, camera);
+				//     }
+				// });
 
 				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 

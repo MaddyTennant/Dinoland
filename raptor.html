@@ -48,141 +48,117 @@
 			var windowHalfX = window.innerWidth / 2;
 			var windowHalfY = window.innerHeight / 2;
 
+			container = document.createElement( 'div' );
+			document.body.appendChild( container );
+			
+			renderer = new THREE.WebGLRenderer({antialias:true});
+			renderer.setPixelRatio( window.devicePixelRatio );
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			container.appendChild( renderer.domElement );
 
-			init();
-			animate();
+			camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
+			camera.position.y = 50;
+			camera.position.z = 300;
 
+			// scene
 
-			function init() {
+			scene = new THREE.Scene();
+			
+			var ambient = new THREE.AmbientLight( 0x444444 );
+			scene.add( ambient );
 
-				container = document.createElement( 'div' );
-				document.body.appendChild( container );
-				
-				renderer = new THREE.WebGLRenderer({antialias:true});
-				renderer.setPixelRatio( window.devicePixelRatio );
-				renderer.setSize( window.innerWidth, window.innerHeight );
-				container.appendChild( renderer.domElement );
-
-				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
-				camera.position.y = 50;
-				camera.position.z = 300;
-
-				// scene
-
-				scene = new THREE.Scene();
-				
-				var ambient = new THREE.AmbientLight( 0x444444 );
-				scene.add( ambient );
-
-				var directionalLight = new THREE.DirectionalLight( 0xffeedd );
-				directionalLight.position.set( 0, 0, 1 ).normalize();
-				scene.add( directionalLight );
-	
-
-				// Skybox
-				
-				var imagePrefix = "images/dawnmountain-";
-				var directions  = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
-				var imageSuffix = ".png";
-				var skyGeometry = new THREE.CubeGeometry( 500, 500, 500 );	
-				
-				var materialArray = [];
-				for (var i = 0; i < 6; i++)
-					materialArray.push( new THREE.MeshBasicMaterial({
-						map: THREE.ImageUtils.loadTexture( imagePrefix + directions[i] + imageSuffix),
-						side: THREE.BackSide
-					}));
-				var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
-				var skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
-				scene.add( skyBox );
-	
-	
-				// Box
-				
-				var geometry = new THREE.CubeGeometry( 10, 10, 10);
-				var material = new THREE.MeshPhongMaterial( { map: THREE.ImageUtils.loadTexture('images/crate.jpg') } );
-			  
-				mesh = new THREE.Mesh(geometry, material );
-				mesh.position.z = 100;
-				mesh.position.x = 30;
-				mesh.rotation.y = Math.PI /4;
-				scene.add( mesh );
-
-				//Dino2
-
-				var onProgress = function ( xhr ) {
-					if ( xhr.lengthComputable ) {
-						var percentComplete = xhr.loaded / xhr.total * 100;
-						console.log( Math.round(percentComplete, 2) + '% downloaded' );
-					}
-				};
-
-				var onError = function ( xhr ) {
-				};
+			var directionalLight = new THREE.DirectionalLight( 0xffeedd );
+			directionalLight.position.set( 0, 0, 1 ).normalize();
+			scene.add( directionalLight );
 
 
-				THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
-
-				var loader = new THREE.OBJMTLLoader();
-				loader.load( 'obj/Raptor.obj', 'obj/Raptor.mtl', function ( object ) {
-
-				object.rotation.y = Math.PI / 4;
-				object.position.y = -70;
-				object.position.x = 100;
-				object.position.z = -100;
-				scene.add( object );
-
-				}, onProgress, onError );
-
-
-				// Dino
-
-				// var onProgress = function ( xhr ) {
-				// 	if ( xhr.lengthComputable ) {
-				// 		var percentComplete = xhr.loaded / xhr.total * 100;
-				// 		console.log( Math.round(percentComplete, 2) + '% downloaded' );
-				// 	}
-				// };
-
-				// var onError = function ( xhr ) {
-				// };
+			// Skybox
+			
+			var imagePrefix = "images/dawnmountain-";
+			var directions  = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
+			var imageSuffix = ".png";
+			var skyGeometry = new THREE.CubeGeometry( 500, 500, 500 );	
+			
+			var materialArray = [];
+			for (var i = 0; i < 6; i++)
+				materialArray.push( new THREE.MeshBasicMaterial({
+					map: THREE.ImageUtils.loadTexture( imagePrefix + directions[i] + imageSuffix),
+					side: THREE.BackSide
+				}));
+			var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
+			var skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
+			scene.add( skyBox );
 
 
-				// THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
+			// Box
+			
+			var geometry = new THREE.CubeGeometry( 10, 10, 10);
+			var material = new THREE.MeshPhongMaterial( { map: THREE.ImageUtils.loadTexture('images/crate.jpg') } );
+		  
+			mesh = new THREE.Mesh(geometry, material );
+			mesh.position.z = 100;
+			mesh.position.x = 30;
+			mesh.rotation.y = Math.PI /4;
+			scene.add( mesh );
 
-				// var loader = new THREE.OBJMTLLoader();
-				// loader.load( 'Pterodactyl/Pterodactyl.obj', 'Pterodactyl/Pterodactyl.mtl', function ( object ) {
+			//Dino2
 
-				// 	object.rotation.y = Math.PI / 5;
-				// 	object.position.y = 60;
-				// 	object.position.z = -150;
-				// 	scene.add( object );
+			var onProgress = function ( xhr ) {
+				if ( xhr.lengthComputable ) {
+					var percentComplete = xhr.loaded / xhr.total * 100;
+					console.log( Math.round(percentComplete, 2) + '% downloaded' );
+				}
+			};
 
-				// }, onProgress, onError );
+			var onError = function ( xhr ) {
+			};
 
-				//
 
-				//Animated Dino
+			THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
 
-				// var loader = new THREE.JSONLoader(true);
-				// loader.load({
-				//     model: "Pterodactyl2.json",
-				//     callback: function(geometry) {
-				//         mesh = new THREE.Mesh(geometry,new THREE.MeshFaceMaterial);
-				//         mesh.position.set(0,0,0);
-				//         mesh.scale.set(1,1,1);
-				//         scene.add(mesh);
-				//         renderer.render(scene, camera);
-				//     }
-				// });
+			var loader = new THREE.OBJMTLLoader();
+			loader.load( 'obj/Raptor.obj', 'obj/Raptor.mtl', function ( object ) {
 
-				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+			object.rotation.y = Math.PI / 4;
+			object.position.y = -70;
+			object.position.x = 100;
+			object.position.z = -100;
+			scene.add( object );
 
-				//
+			}, onProgress, onError );
 
-				window.addEventListener( 'resize', onWindowResize, false );
+			document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 
-			}
+			//
+
+			window.addEventListener( 'resize', onWindowResize, false );
+
+			var loader1 = new THREE.JSONLoader();
+			var animation;
+			var skinnedMesh, pivot, item;
+			loader1.load('./terry.json', function (geometry, materials) {
+				console.log("No mesh: " + skinnedMesh);
+				console.log(skinnedMesh);
+				skinnedMesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
+				console.log(skinnedMesh.material.materials);
+				console.log("Yes mesh: " + skinnedMesh);
+				console.log(skinnedMesh);
+				skinnedMesh.position.y = 50;
+				skinnedMesh.scale.set(15, 15, 15);
+				scene.add(skinnedMesh);
+
+				var materials1 = skinnedMesh.material.materials;
+
+				for (var k in materials1) {
+					materials1[k].skinning = true;
+				}
+
+				THREE.AnimationHandler.add(skinnedMesh.geometry.animation);
+				animation = new THREE.Animation(skinnedMesh, "ArmatureAction", THREE.AnimationHandler.CATMULLROM);
+				animation.play(false, 0);
+
+				animate();
+			});
 
 			function onWindowResize() {
 
@@ -213,9 +189,6 @@
 			}
 
 			function render() {
-
-				// camera.position.x += ( mouseX - camera.position.x ) * .05;
-				// camera.position.y += ( - mouseY - camera.position.y ) * .05;
 
 				camera.lookAt( scene.position );
 
